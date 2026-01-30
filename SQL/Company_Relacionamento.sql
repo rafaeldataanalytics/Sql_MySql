@@ -1,5 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS company;
 
+-- drop schema company;
+
 use company;
 
 create table employee(
@@ -13,8 +15,29 @@ create table employee(
     Salary decimal(10,2),
     Super_ssn char(9),
     Dno int not null,
-    primary key(Ssn)
+    constraint chk_salary_employee check(Salary > 2000),
+    constraint pk_employee primary key(Ssn)
 );
+
+
+alter table employee 
+modify Dno int not null default 1;
+
+alter table employee
+	add constraint fk_employee
+    foreign key(Super_ssn) references employee(Ssn)
+    on delete set null
+    on update cascade;
+    
+SELECT
+    TABLE_NAME,
+    CONSTRAINT_NAME
+FROM information_schema.KEY_COLUMN_USAGE
+WHERE
+    REFERENCED_TABLE_NAME = 'employee';
+
+    
+desc employee;
 
 create table departament(
 	Dname varchar(15) not null,
@@ -22,16 +45,25 @@ create table departament(
     Mgr_ssn char(9),
     Mgr_start_date Date,
     Dept_create_date date,
-    primary key(Dnumber),
-    unique (Dname),
-    foreign key(Mgr_ssn) references employee(Ssn)
+    constraint chk_date_dept check(Dept_create_date < Mgr_start_date ),
+    constraint pk_dept primary key(Dnumber),
+    constraint unique_name_dept unique (Dname),
+    constraint fk_dept_employee foreign key(Mgr_ssn) references employee(Ssn)
 );
+
+alter table departament drop constraint fk_dept_employee;
+
+alter table departament
+	add constraint fk_dept_employee foreign key(Mgr_ssn) references employee(Ssn)
+    on update cascade;
+    
+desc departament;
 
 create table dept_locations(
 	Dnumber int not null,
     Dlocation varchar(15) not null,
-    primary key (Dnumber, Dlocation),
-    foreign key (Dnumber) references departament(Dnumber)
+    constraint pk_dept_locations primary key (Dnumber, Dlocation),
+    constraint fk_dept_locations foreign key (Dnumber) references departament(Dnumber)
 );
 
 create table project(
@@ -39,18 +71,18 @@ create table project(
     Pnumber int not null,
     Plocation varchar(15),
     Dnum int not null,
-    primary key(Pnumber),
-    unique (Pname),
-    foreign key (Dnum) references departament(Dnumber)
+    constraint pk_project primary key(Pnumber),
+    constraint unique_name_project unique (Pname),
+    constraint fk_project foreign key (Dnum) references departament(Dnumber)
 );
 
 create table works_on(
 	Essn char(9) not null,
     Pno int not null,
     Hours decimal(3,1) not null,
-    primary key (Essn, Pno), 
-    foreign key (Essn) references employee(Ssn),
-    foreign key (Pno) references project(Pnumber)
+    constraint pk_works_on primary key (Essn, Pno), 
+    constraint fk_employee_works_on foreign key (Essn) references employee(Ssn),
+    constraint fk_project_works_on_pno foreign key (Pno) references project(Pnumber)
 );
 
 create table dependent(
@@ -59,12 +91,16 @@ create table dependent(
     Sex char, -- F ou M
     Bdate Date,
     Relationship varchar(8),
-    primary key (Essn, Dependent_name),
-    foreign key (Essn) references employee(Ssn)
+    Age int not null,
+    constraint chk_age_dependent check(Age <= 21),
+    constraint pk_dependent primary key (Essn, Dependent_name),
+    constraint fk_dependent foreign key (Essn) references employee(Ssn)
 );
 
 show tables;
-desc works_on;
-desc dependent;
 
-show character set;
+select * from information_schema.table_constraints
+	where constraint_schema = 'company';
+    
+select * from information_schema.referential_constraints
+	where constraint_schema = 'company';

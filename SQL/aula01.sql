@@ -17,6 +17,7 @@ constraint pk_person primary key (person_id)
 select  * from person;
 drop table person;
 desc person;
+
 create database testeMysql;
 use testemysql;
 show tables;
@@ -65,8 +66,28 @@ select constraint_name from information_schema.table_constraints
 desc person;
 
 insert into person values (
-	'0','Rafael', 'Silva', 'M', '1984-10-21',
-    'Sul','Erechim','RS','Brasil','99645-000',1573,'54991371204'
+	'3','Jorge', 'Mota', 'M', '1986-11-21',
+    'Sul','Itampema','SC','Brasil','99638-000',7300,'54991872604'
 );
 
+select fname from person where person_id = 1;
+
 select * from person;
+
+UPDATE person
+SET city = 'Itapema'
+WHERE person_id = 3;
+
+insert into favorite_food values('0','Fritas'),('1','Churrasco'),('2','Carne'),('3','Sushi');
+
+select * from favorite_food;
+
+SELECT p.fname as Nome, p.city, f.food
+FROM person p
+INNER JOIN favorite_food f
+    ON p.person_id = f.person_id
+;
+
+select now();
+
+select now() from dual;
