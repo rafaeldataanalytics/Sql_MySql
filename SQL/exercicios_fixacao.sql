@@ -23,8 +23,18 @@ select p.Pname, w.Essn, e.Fname, w.Hours
 from project p, works_on w, employee e 
 where p.Pnumber = w.Pno and w.Essn = e.Ssn;
 -- Retirando aniguidades
-desc departament; -- Dnumber
-desc dept_locations; -- Dnumber
+desc departament; -- Coluna Dnumber
+desc dept_locations; -- Coluna Dnumber
 select d.Dname, dl.Dlocation 
 from departament d, dept_locations dl
 where d.Dnumber = dl.Dnumber;
+-- Concater Colunas
+select concat(e.Fname, ' ', e.Lname) as Nome_Funcionarios
+from employee e;
+
+select d.Dname as Departamentos ,e.Fname as Funcionários, e.Salary as Salários , e.Salary * 0.11 as 'INSS' 
+from employee e , departament d 
+where (e.Ssn = d.Mgr_ssn);
+
+select concat(e.Fname,' ', e.Minit,' ', e.Lname) as Nome_Completo
+from employee e;
