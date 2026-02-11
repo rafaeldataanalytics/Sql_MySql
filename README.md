@@ -1,8 +1,3 @@
-﻿# Bootcamp Análise Visualização de Dados
- ---
   ## SQL
-  ## Excel  
-  ## Power Bi
 
-  ---
-
+-- 
