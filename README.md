@@ -112,4 +112,5 @@ Back-end Development | Data Analysis | Database Engineering
 ## 👨‍💻 Author
 
 **Rafael**  
-Focused on SQL, Python and Back-end Systems Development  
+Data Analytics| SQL, Python
+
